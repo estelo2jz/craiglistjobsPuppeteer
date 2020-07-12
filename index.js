@@ -8,7 +8,28 @@ async function main() {
 
   const html = await page.content();
   const $ = cheerio.load(html);
-  $(".result-title").each((index, element) => console.log($(element).text()));
+
+  const results = $(".result-info").map((index, element) => {
+    const titleElement = $(element).find(".result-title");
+    const timeElement = $(element).find(".result-date")
+    const hoodElement = $(element).find(".result-hood");
+    const title = $(titleElement).text();
+    const url = $(titleElement).attr('href');
+    const dataPosted = new Date($(timeElement).attr('datetime'));
+    const hood = $(hoodElement)
+      .text()
+      .trim()
+      .replace("(", "")
+      .replace(")", "");
+
+    return {
+      title,
+      url,
+      dataPosted,
+      hood
+    }
+  }).get();
+  console.log(results);
 }
 
 main();
